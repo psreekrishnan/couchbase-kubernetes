@@ -20,6 +20,8 @@ curl -i -u Administrator:password -X POST http://127.0.0.1:8091/settings/indexes
 # Load travel-sample bucket
 curl -v -u Administrator:password -X POST http://127.0.0.1:8091/sampleBuckets/install -d '["travel-sample"]'
 
+IP=`hostname -i`
+
 if [[ "$HOSTNAME" == *-0 ]]; then
   TYPE="MASTER"
 else
@@ -32,7 +34,7 @@ _addServer(){
             couchbase-cli server-add -c $COUCHBASE_MASTER:8091 \
             --username Administrator \
             --password password \
-            --server-add=http://$IP:8091 \
+            --server-add="http://$IP:8091" \
             --server-add-username Administrator \
             --server-add-password password \
             --services data,query,index;
@@ -41,7 +43,6 @@ _addServer(){
 if [ "$TYPE" = "WORKER" ]; then
   sleep 15
 
-IP=`hostname -I`
 
   echo "Auto Rebalance: $AUTO_REBALANCE"
   if [ "$AUTO_REBALANCE" = "true" ]; then
