@@ -1,5 +1,4 @@
 #!/bin/bash
-#Tested for CE 6 and 6.5 version
 set -m
 
 /bin/bash /entrypoint.sh couchbase-server  &
