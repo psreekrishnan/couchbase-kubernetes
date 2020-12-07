@@ -1,29 +1,43 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: couchbase
+  name: couchbase-ha
   labels:
-    app: couchbase
+    app: couchbase-ha
 spec:
   ports:
-  - port: 8091
-    name: couchbase
-  # *.couchbase.default.svc.cluster.local
+  - name: admin
+    port: 8091
+  - name: views
+    port: 8092
+  - name: query
+    port: 8093
+  - name: more
+    port: 8094
+  - name: memcached
+    port: 11210
   clusterIP: None
   selector:
-    app: couchbase
+    app: couchbase-ha
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: couchbase-ui
+  name: couchbase-ha-service
   labels:
-    app: couchbase-ui
+    app: couchbase-ha-service
 spec:
   ports:
-  - port: 8091
-    name: couchbase
+    - name: admin
+      port: 8091
+    - name: views
+      port: 8092
+    - name: query
+      port: 8093
+    - name: more
+      port: 8094
+    - name: memcached
+      port: 11210
   selector:
-    app: couchbase
-  sessionAffinity: ClientIP
-  type: LoadBalancer
+    app: couchbase-ha
+  type: ClusterIP
