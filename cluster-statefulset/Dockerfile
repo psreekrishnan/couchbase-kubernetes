@@ -1,4 +1,5 @@
-FROM couchbase:community-6.0.0
+FROM couchbase:community-6.5.0
 
+#COPY configure-node.sh /opt/couchbase
 COPY configure-node-latest.sh /opt/couchbase
-COPY add-node.sh /
+CMD ["/opt/couchbase/configure-node-latest.sh"]

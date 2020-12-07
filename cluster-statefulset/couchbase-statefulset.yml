@@ -1,56 +1,36 @@
-apiVersion: apps/v1
+apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: couchbase-ha
+  name: couchbase
 spec:
-  serviceName: "couchbase-ha"
-  replicas: 1
-  selector:
-    matchLabels:
-        app: couchbase-ha
+  serviceName: "couchbase"
+  replicas: 2
   template:
     metadata:
       labels:
-        app: couchbase-ha
+        app: couchbase
     spec:
+      terminationGracePeriodSeconds: 0
       containers:
-      - name: couchbase-ha
-        image: {BUILT_IMAGE_NAME}:{TAG}
-        imagePullPolicy: Always        
+      - name: couchbase
+        image: saturnism/couchbase:k8s-petset
         ports:
         - containerPort: 8091
-        - containerPort: 8092
-        - containerPort: 8093
-        - containerPort: 8094
-        - containerPort: 11210
         volumeMounts:
-        - name: couchbase-ha-data
+        - name: couchbase-data
           mountPath: /opt/couchbase/var
         env:
-          - name: MASTER_NODE
-            value: "couchbase-ha-0"
-          - name: SERVICE_NAME
-            value: "couchbase-ha"
-          - name: NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace                       
-        envFrom:
-          - secretRef:
-              name: couchbase-ha-secrets  
-          - configMapRef:
-              name: couchbase-ha-configs                      
-        lifecycle:
-          postStart:
-            exec:
-              command: ["/bin/bash", "-c", "/opt/couchbase/configure-node-latest.sh"]
+          - name: COUCHBASE_MASTER
+            value: "couchbase-0.couchbase.default.svc.cluster.local"
+          - name: AUTO_REBALANCE
+            value: "false"
   volumeClaimTemplates:
   - metadata:
-      name: couchbase-ha-data
+      name: couchbase-data
       annotations:
-        volume.beta.kubernetes.io/storage-class: "nfs-client"
+        volume.beta.kubernetes.io/storage-class: anything
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 20Gi
+          storage: 1Gi
