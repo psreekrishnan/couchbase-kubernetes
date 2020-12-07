@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: couchbase-ha-configs
+  annotations:
+    strategy.spinnaker.io/versioned: "false"
+data:
+  BUCKET_1: 'bucket1'
+  BUCKET_1_MEMORY_QUOTA: '500'
+  BUCKET_2: 'bucket2'
+  BUCKET_2_MEMORY_QUOTA: '1000'
+  CLUSTER_MEMORY_QUOTA: '1800'
+  CLUSTER_MEMORY_INDEX_QUOTA: '300'
+  AUTO_REBALANCE: 'true' 
